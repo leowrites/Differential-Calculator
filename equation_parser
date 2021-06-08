@@ -1,0 +1,18 @@
+logic - using a binary tree for parsing an equation
+1. Breaking the equation into an array of parts 
+    We categorize different parts of an equation into parnthese, operators, and operands
+    Every parnthese is going to be in pairs of left(start) and right(end)
+    All operators will have a left and right child
+
+2. Therefore we can logically come up with a set of rules
+    a. if the current item is (, then add a new node to the left child, and descend to the left
+    b. if it is an operator, the root value will be the operator, then descend to the right child
+    c. if number, set the root value of the current node to the number and return to the parent
+    d. if current item is ), return to parent node
+    These rules allows us to travel between nodes.
+
+3. Derivatives
+    After mapping out the equation with a binary tree, we can then derive accordingly
+    1. Since each node/root is an operator, from the highest level, we can map the operator
+    to a derivative technique
+    2. if a child 
