@@ -15,9 +15,6 @@ class tree:
         self.output = []
         self.stack = []
         self.sample = sample
-    
-    # para function
-    # end function
 
     def parse_fuc(self, sample):
         # combine the digits into one number by appending number to a single temporary holder
