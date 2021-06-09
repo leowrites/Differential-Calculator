@@ -1,37 +1,119 @@
-operators = ["+", "-", "*", "/"]
-class Tree:
-    def __init__(self):
-        self.Tree = list()
-        # a node in a tree should be able to point to two other nodes
-        # which then can points to two other 
-        self.equation = ""
-        self.current_node = None
-    
-    def check_operator(self, t):
-        if t in operators:
-            return 1
-        else:
-            return 0
-    
-    def check_para(self, t):
-        # if a parameter is opened, 
-        if t == "(":
-            return 1
-        elif t == ")":
-            return 0
-        else:
-            return -1
+# variables multiplied by a constant must be connected with the multiply sign *
+# implement trig?
 
-    def create_node(self):
-        # create a new empty node, then set the current node as the left child
-        # condition: paranthethis is detected, or a search show an operator is going to occur
-        pass
+op = {
+    '+':0,
+    '-':0,
+    '*':1,
+    '/':1,
+    '^':2
+}
+trig = ['sin', 'cos', 'tan', 'csc', 'cot', 'sec']
 
-    def parse_equation(self, equation):
-        # every child node will have a parent node, except for the first node
-        for i in equation:
-            if self.check_operator(i) == 1:
+class tree:
+    def __init__(self, sample):
+        self.output = []
+        self.stack = []
+        self.sample = sample
+    
+    # para function
+    # end function
+
+    def parse_fuc(self, sample):
+        # combine the digits into one number by appending number to a single temporary holder
+        # the number will then be appended later when a () is reached or an operator
+        # this would mean that numbers are only pushed when an operator is reached
+        # cos implementation
+        temp_num = ''
+        for i, item in enumerate(sample):
+            if i+1 != len(sample) and item.isdigit():
+                temp_num += item
+            elif i+1 == len(sample) and item.isdigit():
+                temp_num += item
+                self.output.append(temp_num)
+                self.end_fuc()
+            elif i+1 == len(sample) and item == ")":
+                if temp_num != '':
+                    self.output.append(temp_num)
+                self.end_para_fuc()
+                self.end_fuc()
+            else:
+                temp_num = self.push_num(temp_num)
+                if item in op:
+                    self.op_fuc(item)
+                elif self.var_fuc(item):
+                    self.output.append(item)
+                elif self.para_fuc(item) == 0:
+                    self.stack.append(item)
+                elif self.para_fuc(item) == 1:
+                    self.end_para_fuc()
+        return self.output
+    
+    def push_num(self, num):
+        # pushes the number to the output
+        if num != '':
+            self.output.append(num)
+            num = ''
+            return num
+        else:
+            return ''
+    
+    def var_fuc(self, item):
+        if item == "x":
+            return True
+
+    def op_fuc(self, item):
+        #if the stack is not empty
+        if self.stack:
+            # loop through each item from the stack backwards
+            x = range(len(self.stack))
+            q = len(self.stack)
+            for i in x:
+                # ignore (
+                index = q - i - 1
+                v = op.get(item)
+                # exception for index error
+                try:
+                    # if the operator in the stack has a higher
+                    # or equal presedence when compare to the current
+                    # operator
+                    a = self.stack[index]
+                    z = op.get(a)
+                    if a != "(" and z > v or z == v:
+                        self.output.append(self.stack.pop(index))
+                    if a == "(":
+                        break
+                except IndexError:
+                    pass
+
+        # for all other conditions, append the operator to the stack
+        self.stack.append(item)
+    
+    def para_fuc(self, item):
+        if item == "(":
+            return 0
+        elif item == ")":
+            return 1
+    
+    def end_para_fuc(self):
+        x = range(len(self.stack))
+        q = len(self.stack)
+        for i in x:
+            # pop and append all operators
+            # stop when ( is detected, and discard (
+            index = q - i - 1
+            try:
+                if self.stack[-1] == "(":
+                    self.stack.pop()
+                    break
+                else:
+                    self.output.append(self.stack.pop(index))
+            except IndexError:
                 pass
-            elif self.check_para(i) == 1:
-                pass
-            
+    
+    def end_fuc(self):
+        # call derivative function
+        if self.stack:
+            self.output.append(self.stack.pop())
+            self.end_fuc()
+

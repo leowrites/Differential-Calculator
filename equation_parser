@@ -1,18 +1,33 @@
-logic - using a binary tree for parsing an equation
-1. Breaking the equation into an array of parts 
-    We categorize different parts of an equation into parnthese, operators, and operands
-    Every parnthese is going to be in pairs of left(start) and right(end)
-    All operators will have a left and right child
+Logic
+    1. using shutting-yard equation to turn infix notation into postfix notation
+    2. evaluate postfix back to infix notation, derive each term and push to output
 
-2. Therefore we can logically come up with a set of rules
-    a. if the current item is (, then add a new node to the left child, and descend to the left
-    b. if it is an operator, the root value will be the operator, then descend to the right child
-    c. if number, set the root value of the current node to the number and return to the parent
-    d. if current item is ), return to parent node
-    These rules allows us to travel between nodes.
+Pre-cautions
+    1. adding * to variables multiplied by a constant for clearity, eg. 5x to 5*x
 
-3. Derivatives
-    After mapping out the equation with a binary tree, we can then derive accordingly
-    1. Since each node/root is an operator, from the highest level, we can map the operator
-    to a derivative technique
-    2. if a child 
+Operator presedence
+    + - have presedence of 0, * / have presedence of 1, and ^ presedence of 0
+    higher presedence means higher priority
+
+Pesduo
+    Expression parsing
+    empty stack
+    empty output
+    for i, item in formula
+        if item is an operand, then append to output
+        if item is an operator, then all opeartor with higher or equal presedence to the current operator is
+            popped from the opeartor stack and append to the output. The order of popping = the order in the output.
+            the current operator is pushed onto the op stack
+        if item is '(', push to stack 
+        if item is ')', pop all opeartors in the stack until '(' is found, then discard the (
+        if the end of the string is found, pop all opeartor and append to the stack
+    
+    Expression evluation (reverse postfix)
+    for i, item in output
+        if item is an operator, apply operation to first two operands
+        replace the two operand with the calculated value (in our case, we would keep the original,
+        derive the operands and store them in a separate array, then concantenate the two value and the operator into one operand
+        )
+        continue until no more operators are left
+    
+
