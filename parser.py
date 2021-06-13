@@ -2,19 +2,18 @@
 # implement trig?
 
 op = {
-    '+':0,
-    '-':0,
-    '*':1,
-    '/':1,
-    '^':2
+    '+': 0,
+    '-': 0,
+    '*': 1,
+    '/': 1,
+    '^': 2
 }
-trig = ['sin', 'cos', 'tan', 'csc', 'cot', 'sec']
 
-class tree:
-    def __init__(self, sample):
+
+class parser:
+    def __init__(self):
         self.output = []
         self.stack = []
-        self.sample = sample
 
     def parse_fuc(self, sample):
         # combine the digits into one number by appending number to a single temporary holder
@@ -45,7 +44,7 @@ class tree:
                 elif self.para_fuc(item) == 1:
                     self.end_para_fuc()
         return self.output
-    
+
     def push_num(self, num):
         # pushes the number to the output
         if num != '':
@@ -54,13 +53,13 @@ class tree:
             return num
         else:
             return ''
-    
+
     def var_fuc(self, item):
         if item == "x":
             return True
 
     def op_fuc(self, item):
-        #if the stack is not empty
+        # if the stack is not empty
         if self.stack:
             # loop through each item from the stack backwards
             x = range(len(self.stack))
@@ -85,13 +84,13 @@ class tree:
 
         # for all other conditions, append the operator to the stack
         self.stack.append(item)
-    
+
     def para_fuc(self, item):
         if item == "(":
             return 0
         elif item == ")":
             return 1
-    
+
     def end_para_fuc(self):
         x = range(len(self.stack))
         q = len(self.stack)
@@ -107,10 +106,9 @@ class tree:
                     self.output.append(self.stack.pop(index))
             except IndexError:
                 pass
-    
+
     def end_fuc(self):
         # call derivative function
         if self.stack:
             self.output.append(self.stack.pop())
             self.end_fuc()
-
