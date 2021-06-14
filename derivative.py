@@ -2,17 +2,13 @@ import parser
 import node
 op = ['+', '-', '*', '/', '^']
 
-# create a derivative tree
-# need to fix the order of which two terms are passed into the mapping and later the construction
-
-
 class differential:
+    # derives an equation
     # care that ^ is right associative, read first operand as base
     def __init__(self, p=None):
-        print("---------------------------------!!Klassen You Are The Best!!---------------------------------")
         if p == None:
             p = parser.parser(input(
-                "Enter Input (remember to have * if a variable is multiplied by a constant): "))
+                "\nEnter Input (remember to have * if a variable is multiplied by a constant): "))
         else:
             p = parser.parser(p)
         self.equation = p.parse_fuc()
@@ -210,6 +206,7 @@ class differential:
 
     def print_tree(self):
         # prints tree from the lowest to the highest
+        print('\n')
         for i, item in enumerate(self.tree):
             print("fuction:{} derivative:{} left:{} right:{} operator:{} parent:{}".format(
                 item.fx, item.fp, item.left, item.right, item.op, item.parent
