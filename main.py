@@ -8,6 +8,9 @@ if __name__ == "__main__":
     # x-(1+x^5-6*x^10)^5
     # (8*(x^2-2)^7)*2x
     # (x^2-3)^8
+    # 4/(9-x^2)
+    # ((2*x+3)^3)/(4*x-7)
+
     d = derivative.differential()
     result = d.derive()
     d.print_tree()
