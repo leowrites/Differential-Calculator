@@ -8,11 +8,22 @@ op = ['+', '-', '*', '/', '^']
 
 class differential:
     # care that ^ is right associative, read first operand as base
-    def __init__(self, equation):
-        self.equation = equation
+    def __init__(self, p=None):
+        print("---------------------------------!!Klassen You Are The Best!!---------------------------------")
+        if p == None:
+            p = parser.parser(input(
+                "Enter Input (remember to have * if a variable is multiplied by a constant): "))
+        else:
+            p = parser.parser(p)
+        self.equation = p.parse_fuc()
+        print("\nParsed Equation {}".format(self.equation))
         self.new = ''
         self.tree = []
         self.derived = ''
+    
+    def derive(self):
+        self.tree_constructor()
+        return self.derivative_constructor()
 
     def tree_constructor(self):
         # recursively pair all terms
@@ -70,17 +81,58 @@ class differential:
         return target, new_node
 
     def mapping(self, v1, v2, op):
+        # pass in nodes
         m = {
             "*": self.product(v1, v2),
             "/": self.quotient(v1, v2),
             "^": self.power(v1, v2),
-            "+": None,
-            "-": None
+            "-": self.subtract(v2, v1),
+            "+": self.add(v1, v2)
         }
         return m.get(op)
+    
+    def subtract(self, v1, v2):
+        # similar pattern to the product rule
+        # need to check whether a child is a variable or a constant
+        if isinstance(v1, node.node) and isinstance(v2, node.node):
+            return '({}-{})'.format(v1.fp, v2.fp)
+        elif isinstance(v1, node.node) and not isinstance(v2, node.node):
+            if v2.isdigit():
+                return '({})'.format(v1.fp)
+            else:
+                return '(1-{})'.format(v1.fp)
+        elif isinstance(v2, node.node) and not isinstance(v1, node.node):
+            if v1.isdigit():
+                return '(-({}))'.format(v2.fp)
+            else:
+                return '(1-{})'.format(v2.fp)
+        elif not isinstance(v1, node.node) and not isinstance(v2, node.node):
+            if v1.isdigit() and v2.isdigit():
+                return None
+            elif v1.isdigit() and not v2.isdigit():
+                return '(-)'
+            elif v2.isdigit() and not v1.isdigit():
+                return None
+
+    def add(self, v1, v2):
+        if isinstance(v1, node.node) and isinstance(v2, node.node):
+            return '({}+{})'.format(v1.fp, v2.fp)
+        elif isinstance(v1, node.node) and not isinstance(v2, node.node):
+            if v2.isdigit():
+                return '({})'.format(v1.fp)
+            else:
+                # else it would be a single variable, which means the derivative is always 1
+                return '({}+1)'.format(v1.fp)
+        elif isinstance(v2, node.node) and not isinstance(v1, node.node):
+            if v1.isdigit():
+                return '({})'.format(v2.fp)
+            else:
+                return '(1+{})'.format(v2.fp)
+        elif not isinstance(v1, node.node) and not isinstance(v2, node.node):
+            # if neither are nodes
+            return None
 
     def product(self, v1, v2):
-        # disable product rule if necessary
         # if v1 is a node then it has attributes
         # if neither are nodes, then they are either a number or a variable
         if isinstance(v1, node.node) and isinstance(v2, node.node):
@@ -95,7 +147,6 @@ class differential:
             if v1.isdigit():
                 return '({}*{})'.format(v1, v2.fp)
             else:
-                # else it would be a single variable, which means the derivative is always 1
                 return '({}*{}+{})'.format(v2.fp, v1, v2.fx)
         elif not isinstance(v1, node.node) and not isinstance(v2, node.node):
             # if neither are nodes
@@ -114,6 +165,8 @@ class differential:
 
     def quotient(self, v1, v2):
         # quotient rule
+        # v1 is the dividend, v2 is the
+        # f(x) = (h'(x)g(x)-g'(x)h(x))/((g(x))^2)
         pass
 
     def derivative_constructor(self):
@@ -123,18 +176,16 @@ class differential:
             # the node of which that has no parent should be the last node
             # check the position of child 
             if item.parent and item.parent.fp != None:
-                item.parent.fp += '({})'.format(item.fp)
+                item.parent.fp += '*({})'.format(item.fp)
             elif item.parent and item.parent.fp == None:
                 item.parent.fp = '({})'.format(item.fp)
             if not item.parent:
                 # if the node has no parent, then it is the highest level
-                return self.parent_process(item)
-    
-    def parent_process(self, parent):
-        # process parent nodes
-        if parent.op == '+' or parent.op == '-':
-            parent.fp = '[{}]{}[{}]'.format(parent.left.fp, parent.op, parent.right.fp)
-        return parent.fp
+                x = self.mapping(item.left, item.right, item.op)
+                if x != None: 
+                    return x
+                else:
+                    return item.fp
 
     def print_tree(self):
         # prints tree from the lowest to the highest

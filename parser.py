@@ -11,24 +11,25 @@ op = {
 
 
 class parser:
-    def __init__(self):
+    def __init__(self, user_in):
+        self.user_in = user_in
         self.output = []
         self.stack = []
 
-    def parse_fuc(self, sample):
+    def parse_fuc(self):
         # combine the digits into one number by appending number to a single temporary holder
         # the number will then be appended later when a () is reached or an operator
         # this would mean that numbers are only pushed when an operator is reached
         # cos implementation
         temp_num = ''
-        for i, item in enumerate(sample):
-            if i+1 != len(sample) and item.isdigit():
+        for i, item in enumerate(self.user_in):
+            if i+1 != len(self.user_in) and item.isdigit():
                 temp_num += item
-            elif i+1 == len(sample) and item.isdigit():
+            elif i+1 == len(self.user_in) and item.isdigit():
                 temp_num += item
                 self.output.append(temp_num)
                 self.end_fuc()
-            elif i+1 == len(sample) and item == ")":
+            elif i+1 == len(self.user_in) and item == ")":
                 if temp_num != '':
                     self.output.append(temp_num)
                 self.end_para_fuc()
