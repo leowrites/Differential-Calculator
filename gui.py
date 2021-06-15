@@ -52,6 +52,9 @@ class app():
     
     def fun(self, equation):
         d = derivative.Differential(equation)
-        result = d.derive()
+        try:
+            result = d.derive()
+        except TypeError:
+            return 'Error! Try Again'
         d.print_tree()
         return result

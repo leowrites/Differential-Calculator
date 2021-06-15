@@ -1,7 +1,10 @@
 # updated derivative class
 # provides better reliablity
+# try to allow fraction
 from parser import parser
 from node import node
+from fractions import Fraction
+from decimal import Decimal
 
 op = ['+', '-', '*', '/', '^']
 trig = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot']
@@ -11,7 +14,6 @@ class Differential:
     def __init__(self, equation):
         p = parser(equation)
         self.equation = p.parse_fuc()
-        print(self.equation)
         self.node_tree = []
 
     def derive(self):
@@ -132,6 +134,7 @@ class Differential:
                 return '({})'.format(v2)
 
     def quotient(self, v1, v2):
+        # when creating nodes, account for fraction
         if self.is_node(v1) and self.is_node(v2):
             return '(({}*{}-{}*{})/(({})^2))'.format(v1.fp, v2.fx, v2.fp, v1.fx, v2.fx)
 
@@ -160,14 +163,35 @@ class Differential:
         # and the nodes will only need to be search once
         if self.is_node(v2):
             # the program does not support non-numerical powers
-            # fractions may be added later
+            # remove brackets, and check if it is a fraction
+            if '(' in v2.fx:
+                new = v2.fx[1:-1]
+                if '(' in new:
+                    # make sure that there is no double brackets in the exponent
+                    return None
+                else:
+                    b = Fraction(new)
+                    n_p = Fraction(float(b-1))
+                    # follow a similar process 
+                    if self.is_node(v1):
+                        if v1.fp != None:
+                            return '(({})*{}^({}))({})'.format(b, v1.fx, n_p, v1.fp)
+                        else:
+                            return '(({})*{}^({}))'.format(b, v1.fx, n_p)
+                    elif not v1.isdigit():
+                        return '(({})*{}^({})'.format(b, v1, n_p)
+                    else:
+                        return None
             if not v2.fx.isdigit() or v1.isdigit():
                 return None
         elif self.is_node(v1):
             # if v1 is a node, then it probably has a derivative
             # if not, then don't mutiply it by anything
+            # if it's a fraction, convert to decimal, do subtraction, and convert back to fraction form
             if v1.fp != None:
                 return '({}*{}^{})({})'.format(v2, v1.fx, str(int(v2)-1), v1.fp)
+            else:
+                return '({}*{}^{})'.format(v2, v1.fx, str(int(v2)-1))
         else:
             # this is when v2 is a number, but v1 is a varaible
             # this means that it has no derivative
@@ -242,7 +266,3 @@ class Differential:
             print("fuction:{} derivative:{} left:{} right:{} operator:{} parent:{}".format(
                 item.fx, item.fp, item.left, item.right, item.op, item.parent
             ))
-
-
-d = Differential('(x^2-3)^8')
-d.derive()

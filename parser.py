@@ -106,12 +106,15 @@ class parser:
                     # if the operator in the stack has a higher
                     # or equal presedence when compare to the current
                     # operator
+                    # what to do with sec
                     a = self.stack[index]
                     z = op.get(a)
-                    if a != "(" and z > v or z == v:
+                    if a in trig:
                         self.output.append(self.stack.pop(index))
-                    if a == "(":
+                    elif a == "(":
                         break
+                    elif a != "(" and z > v or z == v:
+                        self.output.append(self.stack.pop(index))
                 except IndexError:
                     pass
 
