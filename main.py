@@ -1,5 +1,5 @@
-import derivative
-import parser
+from gui import app
+
 
 # Derivative Calculator for Calculus 12 Final Project
 # 06/07/2021 - 06/13/2021
@@ -17,13 +17,6 @@ if __name__ == "__main__":
     # (x^2-3)^8
     # 4/(9-x^2)
     # ((2*x+3)^3)/(4*x-7)
-    print("\n-----------------------------What's Desmos?-----------------------------")
-    def fun():
-        d = derivative.differential()
-        result = d.derive()
-        d.print_tree()
-        print("\nNodes: {}".format(d.tree))
-        print("\nDerivative: {}\n".format(result))
-        if (input('Feel like another one? y/n: ')) == 'y':
-            fun()
-    fun()
+    # (sin(x))+(cos(x))
+    app = app()
+    app.main()

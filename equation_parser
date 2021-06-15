@@ -10,6 +10,7 @@ Operator presedence
     higher presedence means higher priority
 
 Pesduo
+
     Expression parsing
     empty stack
     empty output
