@@ -1,10 +1,8 @@
-# updated derivative class
-# provides better reliablity
-# try to allow fraction
 from parser import parser
 from node import node
 from fractions import Fraction
 from decimal import Decimal
+# integrate implicit differentiation?
 
 op = ['+', '-', '*', '/', '^']
 trig = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot']
@@ -164,7 +162,7 @@ class Differential:
         if self.is_node(v2):
             # the program does not support non-numerical powers
             # remove brackets, and check if it is a fraction
-            if '(' in v2.fx:
+            if '/' in v2.fx:
                 new = v2.fx[1:-1]
                 if '(' in new:
                     # make sure that there is no double brackets in the exponent

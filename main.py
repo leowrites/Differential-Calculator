@@ -2,9 +2,9 @@ from gui import app
 
 
 # Derivative Calculator for Calculus 12 Final Project
-# 06/07/2021 - 06/13/2021
+# 06/07/2021 - 06/15/2021
 # By Leo Liu
-# Note - Supports chain rule, product rule, quotient rule, addition and subtraction
+# Note - Supports chain rule, product rule, quotient rule, addition, subtraction, and trig
 # IMPORTANT - you must have * between a constant and a variable to show multiplication
 
 if __name__ == "__main__":
@@ -19,5 +19,6 @@ if __name__ == "__main__":
     # ((2*x+3)^3)/(4*x-7)
     # (sin(x))+(cos(x))
     # 1/((sec(2*x)-1)^3)^(1/2)
+    # sin(x^2+sec(5*x^3))
     app = app()
     app.main()

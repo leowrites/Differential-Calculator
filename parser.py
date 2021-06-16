@@ -13,6 +13,7 @@ trig = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot']
 class parser:
     def __init__(self, user_in):
         self.user_in = user_in
+        print('Input: {}'.format(self.user_in))
         self.output = []
         self.stack = []
 
@@ -52,6 +53,7 @@ class parser:
                     self.stack.append(item)
                 elif self.para_fuc(item) == 1:
                     self.end_para_fuc()
+        print("Output: {}".format(self.output))
         return self.output
     
     def find_trig(self):
